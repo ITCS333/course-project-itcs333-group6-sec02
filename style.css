@@ -9,7 +9,7 @@
     font-family: 'Poppins', sans-serif;
 }
 body{
-    background: #e4e9f7;
+    background: #e9e4f7;
 }
 .container{
     display: flex;
@@ -28,7 +28,7 @@ body{
 }
 .form-box{
     width: 450px;
-    margin: 0px 10px;
+    margin: 0px 10px;  
 }
 .form-box header{
     font-size: 25px;
@@ -50,6 +50,7 @@ body{
    border-radius: 5px;
    border: 1px solid #ccc;
    outline: none;
+   background-color: #eee;
 }
 .btn{
     height:35px;
@@ -59,12 +60,12 @@ body{
     color: #fff;
     font-size:15px;
     cursor:pointer;
-    transition:all .3s;
+    transition: all 0.3s;
     margin-top: 10px;
     padding: 0px 10px;
 }
-.btn-hover{
-    opacity: 0.82;
+.btn:hover{
+    filter: brightness(85%);
 }
 .submit{
     width:100%;
@@ -72,3 +73,8 @@ body{
 .link{
     margin-bottom: 15px;
 }
+ a {text-decoration: none;
+}
+
+a:hover{ text-decoration: underline;}
+
