@@ -28,7 +28,11 @@ body{
 }
 .form-box{
     width: 450px;
-    margin: 0px 10px;  
+    margin: 0px 10px; 
+    display:none; 
+}
+.form-box.active{
+    display: block;
 }
 .form-box header{
     font-size: 25px;
@@ -78,3 +82,17 @@ body{
 
 a:hover{ text-decoration: underline;}
 
+select{
+    height: 40px;
+   width: 100%;
+   font-size: 16px;
+   padding: 0 10px;
+   border-radius: 5px;
+   border: 1px solid #ccc;
+   outline: none;
+   background-color: #eee;
+}
+
+header{
+    text-align: center;
+}

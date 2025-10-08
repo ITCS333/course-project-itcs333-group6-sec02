@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="box form-box">
+        <div class="box form-box active" id="login-form">
             <header>Login</header>
             <form action="" method="post">
                 <div class="field input">
@@ -22,10 +22,37 @@
                     <input type="submit" class="btn" name="submit" value="Log in" required>
                 </div>
                 <div class="links">
-                    Don't have account? <a href="register.html">Register</a>
+                    Don't have account? <a href="#" onclick="showForm('register-form')">Register</a>
+                </div>
+            </form>
+        </div>
+        <div class="container">
+        <div class="box form-box" id="register-form">
+            <header>Register</header>
+            <form action="" method="post">
+                <div class="field input">
+                    <input type="text" name="username" placeholder="Username" id="username" required>
+                </div>
+                <div class="field input">
+                    <input type="email" name="email" placeholder="email" id="email" required>
+                </div>
+                <div class="field input">
+                    <input type="password" name="password" placeholder="Password" id="password" required>
+                </div>
+                <select name="role" required>
+                    <option value="">--Select Role--</option>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <div class="field">
+                    <input type="submit" class="btn" name="submit" value="Register" required>
+                </div>
+                <div class="links">
+                    Already have an account? <a href="#" onclick="showForm('login-form')">Login</a>
                 </div>
             </form>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
