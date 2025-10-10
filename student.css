@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #fff;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  padding: 10px 0;
+  border-bottom: 2px solid #9104ad;
+}
+
+.hero {
+  min-height: 100vh;
+  background: url(./images/admin.jpg) no-repeat right center; /* better positioning */
+  background-size: contain; /* width = 45%, height adjusts automatically */
+}
+
+
+nav ul {
+  display: flex;
+  align-items: center;
+}
+
+nav ul li {
+  margin: 0 20px;
+}
+
+nav ul li a {
+  font-size: 15px;
+  font-weight: 800;
+  color: #9104ad;
+  text-transform: uppercase;
+}
+
+nav ul li a:hover{
+    border-bottom: 2px solid #9104ad;
+}
+nav button {
+   height:45px;
+    background: #9104ad;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size:15px;
+    cursor:pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    padding: 0px 10px;
+}
+
+nav button:hover{
+     filter: brightness(85%);
+}
+
+.content{
+    position: absolute;
+    top: 35%;
+    left: 90px;
+}
+
+h2{
+    font-size: 40px;
+    color: #9104ad;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+p{
+    color: #9104ad;
+    font-size: 11px;
+    margin-top: 10px;
+}
+
+

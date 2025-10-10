@@ -9,13 +9,15 @@
     font-family: 'Poppins', sans-serif;
 }
 body{
-    background: #e9e4f7;
+    background: #fff;
 }
 .container{
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 90vh;
+    min-height: 100vh;
+     background-size: contain;
+    background-image: linear-gradient(to  bottom right, #9104ad, #fff);
 }
 .box{
     background: #fdfdfd;
@@ -99,3 +101,4 @@ header{
 }
 
 p{ text-align: center;}
+
