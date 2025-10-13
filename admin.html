@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <title>Admin Portal</title>
 </head>
 <body>
@@ -16,6 +17,9 @@
                 <li><a href="#">Manage Weekly Breakdown</a></li>
                 <li><a href="#">Manage Assignments</a></li>
             </ul>
+            <div class="toggle_btn">
+                <i class="fa-solid fa-bars"></i>
+                </div>
             <div>
                 <button onclick="window.location.href='update_password.html'">Update Password</button>
                 <button>Logout</button>
@@ -28,8 +32,27 @@
         </div>
         </section>
 
-     
+        <div class="dropdown_menu">
+                <li><a href="CRUD.html">Manage Users</a></li>
+                <li><a href="#">Manage Resources</a></li>
+                <li><a href="#">Manage Weekly Breakdown</a></li>
+                <li><a href="#">Manage Assignments</a></li>
+        </div>
+       </div>
     </div>
+    <script>const toggleBtn = document.querySelector('.toggle_btn')
+    const toggleBtnIcon = document.querySelector('.toggle_btn i')
+  const dropDownMenu = document.querySelector('.dropdown_menu')
+  toggleBtn.onclick = function(){
+    dropDownMenu.classList.toggle('open')
+    const isOpen = dropDownMenu.classList.contains('open')
+
+    toggleBtnIcon.classList = isOpen
+    ? 'fa-solid fa-xmark'
+    : 'fa-solid fa-bars'
+  }
+  </script>
+
 </body>
 </html>
 
