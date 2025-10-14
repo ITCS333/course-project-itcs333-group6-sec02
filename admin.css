@@ -10,7 +10,8 @@
 }
 
 body {
-  background-color: #fff;
+  height: 100vh;
+  background: linear-gradient(to bottom left,white 50%,purple) no-repeat; 
 }
 
 .nav {
@@ -33,7 +34,7 @@ body {
 
 .hero {
   height: auto;
-  background: url(./images/adminpg.jpg) no-repeat center; 
+  background: no-repeat center; 
   background-size: cover; 
   max-width: 100%;
 }
@@ -80,7 +81,8 @@ nav button:hover {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: auto;
+  min-height: 80vh;
   padding: 0;
   animation: slideBottom 1s ease forwards;
   animation-delay: 1s;
@@ -197,7 +199,7 @@ p {
     text-align: center; 
     padding: 1rem;
     height: auto; 
-    min-height: 100vh; 
+    min-height: 80vh; 
   }
 
   .home-content h2 {
