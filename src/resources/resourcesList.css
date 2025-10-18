@@ -1,0 +1,45 @@
+body {
+  max-width: 700px;
+  margin: 1rem auto;
+  padding: 1rem;
+  font-size: 0.95rem;
+}
+
+header h1 {
+  text-align: center;
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; 
+}
+
+article {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  margin: 0; 
+  transition: box-shadow 0.2s ;
+}
+
+article h3 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-size: 1.2rem;
+}
+
+article p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+a {
+  font-size: 0.9rem;
+}
+
+article:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
