@@ -1,5 +1,6 @@
-<!--
-  Student Name: [Enter Your Name]
+
+           <!--
+  Student Name: [Husain Mustafa Sayed Salman]
   Requirement: Create a Responsive Admin Portal
 
   Instructions:
@@ -10,6 +11,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Character encoding -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title -->
+    <title>Admin Portal</title>
+
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+        rel="stylesheet">
+    <link rel="stylesheet" href="manage_user.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+    <!--  Header section -->
+    <header>
+        <h1>Admin Portal</h1>
+    </header>
+
+    <!--  Main content -->
+    <main>
+        <!--  Password management section -->
+        <section class="container">
+            <div class="box form-box active" id="password-form">
+                <!--  Section heading -->
+                <h2>Change Your Password</h2>
+
+                <!--  Password form -->
+                <form action="#" method="post">
+                    <fieldset>
+                        <!--  Legend -->
+                        <legend class="text-center mb-3">Password Update</legend>
+
+                        <!--  Admin ID (optional extra field from your design) -->
+                        <div class="field input">
+                            <label for="id">Admin ID</label>
+                            <input type="text" name="id" placeholder="Enter Admin ID" id="id" required>
+                        </div>
+
+                        <!--  Current password -->
+                        <div class="field input">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" name="current-password" placeholder="Current Password" required>
+                        </div>
+
+                        <!--  New password -->
+                        <div class="field input">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" name="new-password" placeholder="New Password" minlength="8" required>
+                        </div>
+
+                        <!-- Confirm password -->
+                        <div class="field input">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
+                        </div>
+
+                        <!--  Submit button -->
+                        <div class="field">
+                            <button type="submit" id="change" class="btn">Update Password</button>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </section>
+  
+  <!-- Section 2: Student Management -->
+<section class="container">
+    <div class="box form-box" id="student-management">
+        <h2>Manage Students</h2>
+
+        <details open>
+            <summary style="font-size: 18px; font-weight: bold; color: purple; cursor: pointer;">
+                Add New Student
+            </summary>
+
+            <form action="#" method="post">
+                <fieldset>
+                    <legend class="text-center mb-3">New Student Information</legend>
+
+                    <div class="field input">
+                        <label for="student-name">Full Name</label>
+                        <input type="text" name="student-name" id="student-name" placeholder="Enter full name" required>
+                    </div>
+
+                    <div class="field input">
+                        <label for="student-id">Student ID</label>
+                        <input type="text" name="student-id" id="student-id" placeholder="Enter student ID" required>
+                    </div>
+
+                    <div class="field input">
+                        <label for="student-email">Email</label>
+                        <input type="email" name="student-email" id="student-email" placeholder="Enter email address" required>
+                    </div>
+
+                    <div class="field input">
+                        <label for="default-password">Default Password</label>
+                        <input type="text" name="default-password" id="default-password" placeholder="Enter default password" value="password123">
+                    </div>
+
+                    <div class="field">
+                        <button type="submit" id="add" class="btn">Add Student</button>
+                    </div>
+                </fieldset>
+            </form>
+        </details>
+    </div>
+</section>
+
+            
+<!-- Subsection 2.2: Student List -->
+<section class="container my-4">
+    <div class="box form-box active" id="student-list">
+        <!-- Centered heading -->
+        <h3 class="text-start mb-3">Registered Students</h3>
+
+        <!-- Responsive table container -->
+        <div class="table-responsive">
+            <table class="table table-hover text-center" id="student-table">
+                <thead style="background-color: #9104ad; color: white;">
+                    <tr>
+                        <th>Name</th>
+                        <th>Student ID</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>12345</td>
+                        <td>john.doe@example.com</td>
+                        <td>
+                            <a href="#" class="text-primary text-decoration-none me-2">
+                            <i class="fa-solid fa-pen-to-square fs-5"></i>
+                            </a>
+                            <a href="#" class="text-danger">
+                                <i class="fa-solid fa-trash fs-5"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>67890</td>
+                        <td>jane.smith@example.com</td>
+                        <td>
+                            <a href="#" class="text-primary text-decoration-none me-2">
+                            <i class="fa-solid fa-pen-to-square fs-5"></i>
+                            </a>
+                            <a href="#" class="text-danger">
+                                <i class="fa-solid fa-trash fs-5"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mark Lee</td>
+                        <td>24680</td>
+                        <td>mark.lee@example.com</td>
+                        <td>
+                            <a href="#" class="text-primary text-decoration-none me-2">
+                            <i class="fa-solid fa-pen-to-square fs-5"></i>
+                            </a>
+                            <a href="#" class="text-danger">
+                                <i class="fa-solid fa-trash fs-5"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+    </main>
+
+</body>
+</html>
+           <!--
+  Student Name: [Enter Your Name]
+  Requirement: Create a Responsive Admin Portal
+
+  Instructions:
+  Fill in the HTML elements as described in the comments.
+  Use the provided IDs for the elements that require them.
+  Focus on creating a clear and semantic HTML structure.
+-->
+
     <!-- TODO: Add the 'meta' tag for character encoding (UTF-8). -->
 
     <!-- TODO: Add the responsive 'viewport' meta tag. -->
@@ -18,8 +211,7 @@
 
     <!-- TODO: Link to a CSS file or a CSS framework. -->
 
-</head>
-<body>
+
 
     <!-- TODO: Create a 'header' element for the top of the page. -->
         <!-- TODO: Inside the header, add a main heading (e.g., 'h1') with the text "Admin Portal". -->
@@ -109,7 +301,6 @@
                 <!-- End of the add student form. -->
             <!-- End of the 'details' element. -->
 
-
             <!-- Subsection 2.2: Student List -->
             <!-- TODO: Add a sub-heading (e.g., 'h3') for the list of students, "Registered Students". -->
 
@@ -140,6 +331,5 @@
 
     <!-- End of the main content area. -->
 
-</body>
-</html>
+
 
