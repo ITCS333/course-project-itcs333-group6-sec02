@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom left, white 20%, purple);
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 450px; 
+    padding: 0 10px;
+}
+
+.box {
+    background: #fdfdfd;
+    display: flex;
+    flex-direction: column;
+    padding: 25px; 
+    border-radius: 20px;
+    box-shadow: 0 0 128px 0 rgba(0,0,0,0.1), 0 32px 64px -48px rgba(0,0,0,0.5);
+    width: 450px; 
+    max-width: 100%;
+}
+
+.form-box header {
+    font-size: 25px; 
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.form-box form .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.form-box form .field input {
+    height: 40px; 
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    background-color: #eee;
+}
+
+.btn {
+    height: 35px; 
+    background: #9104ad;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    padding: 0 10px;
+}
+
+.btn:hover {
+    filter: brightness(85%);
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+legend {
+    font-weight: bold;
+    font-size: 18px; 
+    padding: 0 10px;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+
+@media (max-width: 500px) {
+    .box {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .form-box header {
+        font-size: 22px;
+    }
+
+    legend {
+        font-size: 16px;
+    }
+
+    input {
+        font-size: 14px;
+        height: 35px;
+    }
+
+    .btn {
+        font-size: 14px;
+        height: 35px;
+    }
+}

@@ -4,58 +4,49 @@
     <!-- Character encoding -->
     <meta charset="UTF-8">
 
-    <!-- Responsive design -->
+    <!-- Responsive viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Page title -->
     <title>Login</title>
 
-    <!-- Using Bootstrap  -->
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
-        rel="stylesheet">
-
-   
+    <!-- Link to my CSS -->
     <link rel="stylesheet" href="login.css">
 </head>
-
-<!-- Center form using Bootstrap utility classes -->
-<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
-
-    <!--  Main content -->
-    <main class="w-100" style="max-width: 400px;">
+<body>
+    <!-- Main content area -->
+    <main>
         <!-- Login section -->
-        <section class="card p-4 shadow-lg rounded">
-            
-            <!-- Form heading -->
-            <h2 class="text-center mb-4">Welcome Back!</h2>
+        <section class="container">
+            <div class="box form-box active" id="login-form">
+                <!-- Heading for the form -->
+                <header>Welcome Back!</header>
 
-            <!--  Form -->
-            <form action="#" method="post">
-                <fieldset>
-                    <!--  Fieldset legend -->
-                    <legend class="text-center mb-3">Secure Login</legend>
+                <!-- Login form -->
+                <form action="#" method="post">
+                    <fieldset>
+                        <legend class="text-center mb-3">Secure Login</legend>
 
-                    <!--  Email label and input -->
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" id="email" placeholder="Email" class="form-control" required>
-                    </div>
+                        <!-- Email field -->
+                        <div class="field input">
+                            <label for="email">Email Address</label>
+                            <input type="email" name="email" id="email" placeholder="Enter your email" required>
+                        </div>
 
-                    <!--  Password label and input -->
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" placeholder="Password" class="form-control" minlength="8" required>
-                    </div>
+                        <!-- Password field -->
+                        <div class="field input">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" placeholder="Enter your password" minlength="8" required>
+                        </div>
 
-                    <!--  Submit button -->
-                    <div class="d-grid">
-                        <button type="submit" id="login" class="btn btn-primary">Log In</button>
-                    </div>
-                </fieldset>
-            </form>
+                        <!-- Submit button -->
+                        <div class="field">
+                            <button type="submit" id="login" class="btn">Log In</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         </section>
     </main>
-
 </body>
 </html>

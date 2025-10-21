@@ -85,19 +85,6 @@ section{
     filter: brightness(85%);
 }
 
-.cancel{
-    height:35px;
-    background: #fff ;
-    border: 0;
-    border-radius: 5px;
-    color: #9104ad;
-    font-size:15px;
-    cursor:pointer;
-    transition: all 0.3s;
-    margin-top: 10px;
-    padding: 0px 10px;
-}
-
 details summary {
     font-size: 18px;
     font-weight: bold;
@@ -146,12 +133,6 @@ label{
         font-size: 16px;
     }
 
-    .btn, .cancel{
-        font-size: 14px;
-        height: 35px;
-        padding: 0 8px;
-    }
-
     input{
         font-size: 14px;
         height: 35px;
@@ -177,11 +158,6 @@ label{
         font-size: 14px;
     }
 
-    .btn, .cancel{
-        font-size: 12px;
-        height: 30px;
-        padding: 0 6px;
-    }
 
     input{
         font-size: 12px;
@@ -219,4 +195,5 @@ label{
         padding: 3px 5px;
     }
 }
+
 
