@@ -1,0 +1,144 @@
+
+body {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #222;
+}
+
+main > section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+article {
+  background-color: #fff;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+article:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+article h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: #111;
+}
+
+article p {
+  margin: 0 0 0.7rem 0;
+  font-size: 1rem;
+  color: #444;
+}
+
+article a {
+  text-decoration: none;
+  color: #1a73e8;
+  font-weight: bold;
+}
+
+article a:hover {
+  text-decoration: underline;
+}
+
+
+#discussion-forum {
+  margin-top: 1.5rem;
+}
+
+#discussion-forum h2 {
+  margin: 0 0 0.7rem 0;
+  font-size: 1.4rem;
+  color: #222;
+}
+
+#discussion-forum .comments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+#discussion-forum article {
+  padding: 0.7rem 0.9rem;
+  background-color: #fefefe;
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+
+#discussion-forum footer {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.3rem;
+}
+
+
+#discussion-forum form {
+  margin-top: 1rem;
+}
+
+#discussion-forum fieldset {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  background-color: #fff;
+}
+
+#discussion-forum legend {
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0 0.2rem;
+}
+
+#discussion-forum label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+}
+
+#discussion-forum textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.4rem;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+#discussion-forum button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #1a73e8;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#discussion-forum button:hover {
+  background-color: #155bb5;
+}
