@@ -1,0 +1,110 @@
+
+header, main {
+  width: 90%;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+
+header h1 {
+  color: rgb(145, 4, 173);
+  text-align: center;
+}
+main h2 {
+  color: rgb(145, 4, 173);
+  margin: 10px 0;
+}
+
+/* form area */
+#week-form fieldset {
+  border: 1px solid rgb(232, 215, 241);
+  border-radius: 6px;
+  padding: 10px;
+  background: rgb(255, 255, 255);
+}
+
+#week-form legend {
+  color: rgb(145, 4, 173);
+  font-weight: bold;
+}
+
+#week-form label {
+  display: block;
+  margin-top: 8px;
+  color: rgb(60, 60, 60);
+}
+
+#week-form input[type="text"],
+#week-form input[type="date"],
+#week-form textarea {
+  width: 100%;
+  margin-top: 5px;
+  padding: 8px;
+  border: 1px solid rgb(216, 192, 234);
+  border-radius: 5px;
+  background: rgb(255, 255, 255);
+}
+
+#week-form textarea {
+  resize: vertical;
+}
+
+#week-form input:focus,
+#week-form textarea:focus {
+  border-color: rgb(145, 4, 173);
+}
+
+
+#add-week {
+  margin-top: 10px;
+  background: rgb(145, 4, 173);
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+#add-week:hover {
+  background: rgb(120, 3, 143);
+}
+
+/* table section */
+#weeks-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(234, 214, 246);
+}
+
+#weeks-table thead th {
+  background: rgb(145, 4, 173);
+  color: rgb(255, 255, 255);
+  text-align: center;
+  padding: 10px;
+}
+
+#weeks-table td {
+  padding: 10px;
+  border-top: 1px solid rgb(240, 230, 247);
+}
+
+
+#weeks-table tr:nth-child(even) {
+  background: rgb(252, 247, 255);
+}
+
+#weeks-table tr:hover {
+  background: rgb(246, 238, 254);
+}
+
+
+#weeks-table td nav {
+  margin-top: 5px;
+}
+
+#weeks-table td nav button {
+  margin-right: 6px;
+  padding: 6px 10px;
+}
