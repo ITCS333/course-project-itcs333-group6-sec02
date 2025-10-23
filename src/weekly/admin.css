@@ -6,6 +6,7 @@
   text-decoration: none;
   list-style: none;
   font-family: 'Poppins', sans-serif;
+  color: #000;
 }
 header, main {
   width: 90%;
@@ -140,7 +141,7 @@ main h2 {
   padding: 10px;
 }
 
-#new-comment,#discription-section,#Exercise-section {
+#new-comment,#discription-section,#Exercise-section,#weekly-list article{
   background: rgb(252, 247, 255);
   width: 100%;
   margin-top: 5px;
@@ -169,4 +170,7 @@ button {
 button:hover {
   filter: brightness(85%);
 }
-
+.date {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
