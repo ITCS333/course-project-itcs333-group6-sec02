@@ -17,8 +17,10 @@ let resources = [];
 
 // --- Element Selections ---
 // TODO: Select the resource form ('#resource-form').
+const resourceForm = document.getElementById('resource-form');
 
 // TODO: Select the resources table body ('#resources-tbody').
+const resourcesTableBody = document.getElementById('resources-tbody');
 
 // --- Functions ---
 
@@ -34,6 +36,36 @@ let resources = [];
  */
 function createResourceRow(resource) {
   // ... your implementation here ...
+  const tr = document.createElement('tr')
+
+  const titleTd = document.createElement('td');
+  titleTd.textContent = resource.title || '';
+  tr.appendChild(titleTd);
+  
+  const descTd = document.createElement('td');
+  descTd.textContent = resource.description || '';
+  tr.appendChild(descTd);
+
+  const actionsTd = document.createElement('td');
+  const editBtn = document.createElement('button');
+  editBtn.type = 'button';
+  editBtn.className = 'edit-btn';
+  editBtn.setAttribute('data-id', resource.id);
+  editBtn.textContent = 'Edit';
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.type = 'button';
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.setAttribute('data-id', resource.id);
+  deleteBtn.textContent = 'Delete';
+
+  actionsTd.appendChild(editBtn);
+  actionsTd.appendChild(document.createTextNode(' '));
+  actionsTd.appendChild(deleteBtn);
+
+  tr.appendChild(actionsTd);
+
+  return tr;
 }
 
 /**
@@ -46,6 +78,17 @@ function createResourceRow(resource) {
  */
 function renderTable() {
   // ... your implementation here ...
+   if (!resourcesTableBody)
+    {
+      return;
+    }
+
+  resourcesTableBody.innerHTML = '';
+
+  resources.forEach(resource => {
+    const row = createResourceRow(resource);
+    resourcesTableBody.appendChild(row);
+  });
 }
 
 /**
@@ -61,6 +104,35 @@ function renderTable() {
  */
 function handleAddResource(event) {
   // ... your implementation here ...
+  event.preventDefault();
+
+  const titleInput = document.getElementById('resource-title');
+  const descInput = document.getElementById('resource-description');
+  const linkInput = document.getElementById('resource-link');
+
+  const title = titleInput ? titleInput.value.trim() : '';
+  const description = descInput ? descInput.value.trim() : '';
+  const link = linkInput ? linkInput.value.trim() : '';
+
+  //validation 
+  if (!title || !link) {
+    alert('Please fill in the required fields.');
+    return;
+  }
+
+  const newResource = {
+    id: `res_${Date.now()}`,
+    title,
+    description,
+    link
+  };
+
+  resources.push(newResource);
+
+  renderTable();
+
+  if (resourceForm) resourceForm.reset();
+
 }
 
 /**
@@ -75,6 +147,18 @@ function handleAddResource(event) {
  */
 function handleTableClick(event) {
   // ... your implementation here ...
+  const target = event.target;
+
+  if (!target || !target.classList) return;
+
+  if (target.classList.contains('delete-btn')) {
+    const id = target.getAttribute('data-id');
+    if (!id) return;
+
+    resources = resources.filter(r => r.id !== id);
+
+    renderTable();
+  }
 }
 
 /**
@@ -89,6 +173,29 @@ function handleTableClick(event) {
  */
 async function loadAndInitialize() {
   // ... your implementation here ...
+  try {
+    const resp = await fetch('api/resources.json');
+    if (resp.ok) {
+      const data = await resp.json();
+      resources = Array.isArray(data) ? data.slice() : [];
+    } else {
+      resources = [];
+      console.warn('resources.json fetch failed:', resp.status, resp.statusText);
+    }
+  } catch (err) {
+    resources = [];
+    console.error('Error fetching resources.json:', err);
+  }
+
+  renderTable();
+
+  if (resourceForm) {
+    resourceForm.addEventListener('submit', handleAddResource);
+  }
+
+  if (resourcesTableBody) {
+    resourcesTableBody.addEventListener('click', handleTableClick);
+  }
 }
 
 // --- Initial Page Load ---

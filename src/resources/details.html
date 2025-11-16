@@ -24,7 +24,7 @@
   </head>
   <body>
     <!-- TODO: Create a 'header' with a main heading ('h1'). You can use a dummy title like "Chapter 1 Notes". -->
-    <header><h1>Chapter 1 Notes</h1></header>
+    <header><h1 id="resource-title">Chapter 1 Notes</h1></header>
     <!-- TODO: Create the 'main' content area. -->
     <main>
       <!-- Section 1: Resource Information -->
@@ -32,15 +32,14 @@
         <!-- TODO: Use an 'article' to display the main resource information. -->
         <article>
           <!-- TODO: Add a paragraph ('p') for the resource description (use dummy text). -->
-          <p>
+          <p id="resource-description">
             Introduction to Internet Software Development. This resource covers
             the basics of web technologies, including HTML, CSS, and JavaScript.
           </p>
           <!-- TODO: Add an anchor tag ('a') that links to the actual resource URL (use a dummy link like "https://example.com").
                  - Text should be "Access Resource Material".
                  - Consider adding 'target="_blank"' to open it in a new tab. -->
-          <a href="https://example.com" target="_blank"
-            >Access Resource Material</a
+          <a href="https://example.com" target="_blank" id="resource-link" >Access Resource Material</a
           >
           <!-- End of article. -->
         </article>
@@ -53,7 +52,7 @@
         <h2>Discussion</h2>
         <!-- Subsection 2.1: Existing Comments -->
         <!-- TODO: Add a container (like a 'div') for the list of comments. -->
-        <div class="comments">
+        <div class="comments" id="comment-list">
           <!-- TODO: Add 1-2 dummy comments to show the structure. -->
 
           <!-- Example Comment 1: -->
@@ -79,7 +78,7 @@
         </div>
         <!-- Subsection 2.2: Add a Comment Form -->
         <!-- TODO: Create a 'form' for users to post new comments. Action can be '#'. -->
-        <form action="#">
+        <form action="#" id="comment-form">
           <!-- TODO: Use a 'fieldset' to group the controls. -->
           <fieldset>
             <!-- TODO: Add a 'legend', e.g., "Leave a Comment". -->
@@ -100,5 +99,6 @@
       </section>
       <!-- End of main. -->
     </main>
+    <script src="details.js" defer></script>
   </body>
 </html>
