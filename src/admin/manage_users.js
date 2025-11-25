@@ -34,7 +34,34 @@ const addStudentForm = document.querySelector("#add-student-form");
 const changePasswordForm = document.querySelector("#password-form");
 const searchInput = document.querySelector("#search-input");
 const tableHeaders = document.querySelectorAll("thead th");
+// edit modal.
+const editModal = document.getElementById("editModal");
+const editForm = document.getElementById("edit-student-form");
+const editName = document.getElementById("edit-name");
+const editEmail = document.getElementById("edit-email");
+const editId = document.getElementById("edit-id");
+const editCancelBtn = document.getElementById("edit-cancel");
 
+// Edit Modal Close Button.
+editCancelBtn.addEventListener("click", () => {
+    editModal.style.display = "none";
+});
+
+// Modal Submit / Update Student.
+editForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const id = editId.value;
+    const student = students.find((s) => s.id === id);
+
+    if (student) {
+        student.name = editName.value.trim();
+        student.email = editEmail.value.trim();
+    }
+
+    editModal.style.display = "none";
+    renderTable(students);
+});
 // --- Functions ---
 /**
  * TODO: Implement the createStudentRow function.
@@ -170,27 +197,30 @@ function handleAddStudent(event) {
 function handleTableClick(event) {
   const target = event.target;
 
+  // Handle Delete Button
   if (target.classList.contains("delete-btn")) {
     const id = target.dataset.id;
     students = students.filter((s) => s.id !== id);
     renderTable(students);
   }
 
-  
+  // Handle Edit Button (Modal Version)
   if (target.classList.contains("edit-btn")) {
     const id = target.dataset.id;
     const student = students.find((s) => s.id === id);
+
     if (student) {
-      const newName = prompt("Enter new name:", student.name);
-      const newEmail = prompt("Enter new email:", student.email);
-      if (newName && newEmail) {
-        student.name = newName.trim();
-        student.email = newEmail.trim();
-        renderTable(students);
-      }
+      // Fill the modal with the current student values
+      editName.value = student.name;
+      editEmail.value = student.email;
+      editId.value = student.id;
+
+      // Show the modal
+      editModal.style.display = "flex";
     }
   }
 }
+
 
 /**
  * TODO: Implement the handleSearch function.
