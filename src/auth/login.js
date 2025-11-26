@@ -104,6 +104,7 @@ function handleLogin(event) {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
 
+ 
   if (!isValidEmail(email)) {
     displayMessage("Invalid email format.", "error");
     return;
@@ -114,11 +115,32 @@ function handleLogin(event) {
     return;
   }
 
-  displayMessage("Login successful!", "success");
+  
+  fetch("api/index.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      displayMessage("Login successful!", "success");
 
- 
-  emailInput.value = "";
-  passwordInput.value = "";
+      
+      emailInput.value = "";
+      passwordInput.value = "";
+    } else {
+      displayMessage(data.message, "error");
+    }
+  })
+  .catch(error => {
+    displayMessage("Server error. Please try again later.", "error");
+  });
 }
 
 /**
