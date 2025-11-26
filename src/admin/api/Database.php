@@ -1,5 +1,4 @@
 <?php
-<?php
 class Database {
     private $host = "localhost";   
     private $db_name = "course";
@@ -12,11 +11,12 @@ class Database {
 
         try {
             $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=utf8",
+                "mysql:host={$this->host};dbname={$this->db_name};charset=utf8",
                 $this->username,
                 $this->password
             );
 
+            // PDO settings
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -31,6 +31,4 @@ class Database {
         return $this->conn;
     }
 }
-?>
-
 ?>
