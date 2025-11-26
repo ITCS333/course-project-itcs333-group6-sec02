@@ -125,6 +125,11 @@ function handleChangePassword(event) {
   const current = document.querySelector("#current-password").value.trim();
   const newPass = document.querySelector("#new-password").value.trim();
   const confirm = document.querySelector("#confirm-password").value.trim();
+  
+  if (!current) {
+    alert("Please enter your current password.");
+    return;
+  }
 
   if (newPass !== confirm) {
     alert("Passwords do not match.");
@@ -162,7 +167,7 @@ function handleAddStudent(event) {
 
   const name = document.querySelector("#student-name").value.trim();
   const id = document.querySelector("#student-id").value.trim();
-  const email = document.querySelector("#student-email").value.trim();
+  const email = document.querySelector("#student-email").value.trim().toLowerCase();
 
   if (!name || !id || !email) {
     alert("Please fill out all required fields.");
