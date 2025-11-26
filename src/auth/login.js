@@ -104,7 +104,6 @@ function handleLogin(event) {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
 
- 
   if (!isValidEmail(email)) {
     displayMessage("Invalid email format.", "error");
     return;
@@ -116,7 +115,7 @@ function handleLogin(event) {
   }
 
   
-  fetch("api/index.php", {
+  fetch("src/auth/api/index.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
