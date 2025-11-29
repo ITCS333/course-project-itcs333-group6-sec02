@@ -3,9 +3,6 @@
 # ITCS### Course Page
 
 ## The names and student IDs of all team members.
-<h1>ITCS### Course Page</h1>
-
-<h2>The names and student IDs of all team members</h2>
 
 <table border="1" cellpadding="8" cellspacing="0">
   <thead>
