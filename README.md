@@ -3,7 +3,69 @@
 # ITCS### Course Page
 
 ## The names and student IDs of all team members.
+<h1>ITCS### Course Page</h1>
+
+<h2>The names and student IDs of all team members</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Student Name</th>
+      <th>Student ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Husain Mustafa Sayed Salman</td>
+      <td>202011543</td>
+    </tr>
+    <tr>
+      <td>Member 2</td>
+      <td>STUDENT-ID</td>
+    </tr>
+    <tr>
+      <td>Member 3</td>
+      <td>STUDENT-ID</td>
+    </tr>
+    <tr>
+      <td>Member 4</td>
+      <td>STUDENT-ID</td>
+    </tr>
+  </tbody>
+</table>
+
+
 
 ## A table indicating which student was responsible for which task.
 
+<h2 style="margin-top: 20px;">Task Distribution</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Task Number</th>
+      <th>Assigned to</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Task 1</td>
+      <td>Husain Mustafa Sayed Salman</td>
+    </tr>
+    <tr>
+      <td>Task 2</td>
+      <td>Member Name</td>
+    </tr>
+    <tr>
+      <td>Task 3</td>
+      <td>Member Name</td>
+    </tr>
+    <tr>
+      <td>Task 4</td>
+      <td>Member Name</td>
+    </tr>
+  </tbody>
+</table>
+
 ## A link to your live, hosted application on Replit.
+https://8e5d59e3-e50f-4170-9f85-6a4c61338b1c-00-3df9z4h8yogop.sisko.replit.dev/ 
