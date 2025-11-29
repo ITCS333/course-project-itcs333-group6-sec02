@@ -119,18 +119,32 @@ function handleAddResource(event) {
     alert('Please fill in the required fields.');
     return;
   }
+   // --- Check if editing an existing resource ---
+  const editingId = resourceForm.getAttribute('data-editing-id');
+  if (editingId) {
+    // Update the existing resource in the array
+    const index = resources.findIndex(r => r.id === editingId);
+    if (index !== -1) {
+      resources[index].title = title;
+      resources[index].description = description;
+      resources[index].link = link;
+    }
 
-  const newResource = {
-    id: `res_${Date.now()}`,
-    title,
-    description,
-    link
-  };
+    // Remove the editing flag
+    resourceForm.removeAttribute('data-editing-id');
+  } else {
+    // Create a new resource
+    const newResource = {
+      id: `res_${Date.now()}`,
+      title,
+      description,
+      link
+    };
+    resources.push(newResource);
+  }
 
-  resources.push(newResource);
-
+  // Re-render table
   renderTable();
-
   if (resourceForm) resourceForm.reset();
 
 }
@@ -159,6 +173,22 @@ function handleTableClick(event) {
 
     renderTable();
   }
+
+   // Edit resource 
+  if (target.classList.contains('edit-btn')) {
+    const id = target.getAttribute('data-id');
+    const resource = resources.find(r => r.id === id);
+    if (!resource) return;
+
+    // Populate form with existing values
+    document.getElementById('resource-title').value = resource.title;
+    document.getElementById('resource-description').value = resource.description;
+    document.getElementById('resource-link').value = resource.link;
+
+    // Store editing state in form
+    resourceForm.setAttribute('data-editing-id', id);
+  }
+
 }
 
 /**
