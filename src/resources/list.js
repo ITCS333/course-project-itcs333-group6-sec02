@@ -59,7 +59,7 @@ function createResourceArticle(resource) {
 async function loadResources() {
   // ... your implementation here ...
    try {
-    const response = await fetch('api/resources.json');
+    const response = await fetch('api/index.php');
     let resources = [];
     if (response.ok) {
       resources = await response.json();

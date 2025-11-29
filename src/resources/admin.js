@@ -174,7 +174,7 @@ function handleTableClick(event) {
 async function loadAndInitialize() {
   // ... your implementation here ...
   try {
-    const resp = await fetch('api/resources.json');
+    const resp = await fetch('api/index.php');
     if (resp.ok) {
       const data = await resp.json();
       resources = Array.isArray(data) ? data.slice() : [];

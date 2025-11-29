@@ -151,8 +151,8 @@ async function initializePage() {
 
   try {
     const [resResp, comResp] = await Promise.all([
-      fetch('api/resources.json'),
-      fetch('api/comments.json')
+      fetch('api/index.php'),
+      fetch(`api/index.php?action=comments&resource_id=${currentResourceId}`)
     ]);
 
     const [resourcesData, commentsData] = await Promise.all([
@@ -160,8 +160,8 @@ async function initializePage() {
       comResp.json()
     ]);
 
-    const resource = resourcesData.find(r => r.id === currentResourceId);
-    currentComments = commentsData[currentResourceId] || [];
+    const resource = resourcesData.find(r => r.id == currentResourceId);
+    currentComments = commentsData.data || [];
 
     if (!resource) {
       resourceTitle.textContent = "Resource not found.";
