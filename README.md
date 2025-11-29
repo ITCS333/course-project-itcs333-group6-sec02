@@ -17,8 +17,8 @@
       <td>202011543</td>
     </tr>
     <tr>
-      <td>Member 2</td>
-      <td>STUDENT-ID</td>
+      <td>Ali Naser Ahmed</td>
+      <td>202009697</td>
     </tr>
     <tr>
       <td>Member 3</td>
@@ -51,7 +51,7 @@
     </tr>
     <tr>
       <td>Task 2</td>
-      <td>Member Name</td>
+      <td>Ali Naser Ahmed</td>
     </tr>
     <tr>
       <td>Task 3</td>
