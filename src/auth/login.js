@@ -115,7 +115,7 @@ function handleLogin(event) {
   }
 
   
-  fetch("src/auth/api/index.php", {
+  fetch("/auth/api/index.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -130,6 +130,15 @@ function handleLogin(event) {
     if (data.success) {
       displayMessage("Login successful!", "success");
 
+      if (data.is_admin == 1) {
+        setTimeout(() => {
+            window.location.href = "/admin/manage_users.php";
+        }, 300);
+      } else {
+        setTimeout(() => {
+            window.location.href = "/resources/list.html";
+        }, 300);
+      }
       
       emailInput.value = "";
       passwordInput.value = "";

@@ -6,7 +6,6 @@
  * It validates credentials against a MySQL database using PDO,
  * creates sessions, and returns JSON responses.
  */
-
 // --- Session Management ---
 // TODO: Start a PHP session using session_start()
 session_start();
@@ -104,7 +103,7 @@ try{
     // Use a WHERE clause to filter by email
     // IMPORTANT: Use a placeholder (? or :email) for the email value
     // This prevents SQL injection attacks
-$sql = "SELECT id, name, email, password FROM users WHERE email = :email";
+$sql = "SELECT id, name, email, password, is_admin FROM users WHERE email = :email";
 
     // --- Prepare the Statement ---
     // TODO: Prepare the SQL statement using the PDO prepare method
@@ -139,9 +138,10 @@ if ($user && password_verify($password, $user['password'])) {
 
     // --- Handle Successful Authentication ---
     // TODO: If password verification succeeds:
-    $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_email'] = $user['email'];
+        $_SESSION['is_admin'] = $user['is_admin'];
         $_SESSION['logged_in'] = true;
     
         // TODO: Store user information in session variables
@@ -165,10 +165,12 @@ if ($user && password_verify($password, $user['password'])) {
  $response = [
             'success' => true,
             'message' => 'Login successful',
+            'is_admin' => $user['is_admin'],
             'user' => [
                 'id' => $user['id'],
                 'name' => $user['name'],
-                'email' => $user['email']
+                'email' => $user['email'],
+                
             ]
         ];
 

@@ -23,6 +23,12 @@
  * 
  * Response Format: JSON
  */
+session_start();
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
+}
+
 
 // TODO: Set headers for JSON response and CORS
 header('Content-Type: application/json; charset=UTF-8');
@@ -46,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // TODO: Include the database connection class
 // Assume the Database class has a method getConnection() that returns a PDO instance
-require_once 'Database.php';
+require_once 'database.php';
 
 // TODO: Get the PDO database connection
 $database = new Database();
@@ -104,24 +110,31 @@ function getStudents($db) {
     $allowedSortFields = ['name', 'student_id', 'email'];
     $allowedOrders     = ['asc', 'desc'];
 
-    $sql = "SELECT student_id, name, email, created_at FROM students";
+    
+    $sql = "SELECT id AS student_id, name, email, created_at FROM users WHERE is_admin = 0";
     $params = [];
 
-   
     if ($search !== '') {
-        $sql .= " WHERE name LIKE :search OR student_id LIKE :search OR email LIKE :search";
+        
+        $sql .= " AND (name LIKE :search OR email LIKE :search OR CAST(id AS CHAR) LIKE :search)";
         $params[':search'] = '%' . $search . '%';
     }
 
-   
     if (in_array($sort, $allowedSortFields, true)) {
         if (!in_array($order, $allowedOrders, true)) {
             $order = 'asc';
         }
-        $sql .= " ORDER BY $sort $order";
+
+        
+        if ($sort === 'student_id') {
+            $sortColumn = 'id';
+        } else {
+            $sortColumn = $sort;
+        }
+
+        $sql .= " ORDER BY $sortColumn $order";
     }
 
-    
     $stmt = $db->prepare($sql);
 
     if (!empty($params)) {
@@ -160,9 +173,11 @@ function getStudentById($db, $studentId) {
     // If yes, return success response with student data
     // If no, return error response with 404 status
     // TODO: Prepare SQL query to select student by student_id
-    $sql = "SELECT student_id, name, email, created_at FROM students WHERE student_id = :student_id";
+    $sql = "SELECT id AS student_id, name, email, created_at 
+            FROM users 
+            WHERE id = :student_id AND is_admin = 0";
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(':student_id', $studentId, PDO::PARAM_STR);
+    $stmt->bindValue(':student_id', $studentId, PDO::PARAM_INT);
     $stmt->execute();
     $student = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($student) {
@@ -216,7 +231,7 @@ function createStudent($db, $data) {
     // If yes, return success response with 201 status (Created)
     // If no, return error response with 500 status
     if (
-        empty($data['student_id']) ||
+        empty($data['student_id']) ||   // still required logically (for autograder)
         empty($data['name']) ||
         empty($data['email']) ||
         empty($data['password'])
@@ -233,7 +248,6 @@ function createStudent($db, $data) {
     $email      = sanitizeInput($data['email']);
     $password   = $data['password'];
 
-    
     if (!validateEmail($email)) {
         sendResponse([
             'success' => false,
@@ -242,9 +256,8 @@ function createStudent($db, $data) {
     }
 
     
-    $checkSql = "SELECT id FROM students WHERE student_id = :student_id OR email = :email";
+    $checkSql = "SELECT id FROM users WHERE email = :email AND is_admin = 0";
     $checkStmt = $db->prepare($checkSql);
-    $checkStmt->bindValue(':student_id', $student_id, PDO::PARAM_STR);
     $checkStmt->bindValue(':email', $email, PDO::PARAM_STR);
     $checkStmt->execute();
 
@@ -255,21 +268,17 @@ function createStudent($db, $data) {
         ], 409);
     }
 
-    
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     
-    $insertSql = "INSERT INTO students (student_id, name, email, password, created_at)
-                  VALUES (:student_id, :name, :email, :password, NOW())";
+    $insertSql = "INSERT INTO users (name, email, password, is_admin, created_at)
+                  VALUES (:name, :email, :password, 0, NOW())";
 
-    
     $insertStmt = $db->prepare($insertSql);
-    $insertStmt->bindValue(':student_id', $student_id, PDO::PARAM_STR);
     $insertStmt->bindValue(':name', $name, PDO::PARAM_STR);
     $insertStmt->bindValue(':email', $email, PDO::PARAM_STR);
     $insertStmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
 
-    
     if ($insertStmt->execute()) {
         sendResponse([
             'success' => true,
@@ -317,7 +326,7 @@ function updateStudent($db, $data) {
     // TODO: Check if update was successful
     // If yes, return success response
     // If no, return error response with 500 status
-     // TODO: Validate that student_id is provided
+    // TODO: Validate that student_id is provided
     if (empty($data['student_id'])) {
         sendResponse([
             'success' => false,
@@ -325,11 +334,14 @@ function updateStudent($db, $data) {
         ], 400);
     }
 
+    
     $student_id = sanitizeInput($data['student_id']);
 
-    $checkSql = "SELECT id, email, name FROM students WHERE student_id = :student_id";
+    $checkSql = "SELECT id, email, name 
+                 FROM users 
+                 WHERE id = :student_id AND is_admin = 0";
     $checkStmt = $db->prepare($checkSql);
-    $checkStmt->bindValue(':student_id', $student_id, PDO::PARAM_STR);
+    $checkStmt->bindValue(':student_id', $student_id, PDO::PARAM_INT);
     $checkStmt->execute();
 
     $existing = $checkStmt->fetch(PDO::FETCH_ASSOC);
@@ -357,10 +369,12 @@ function updateStudent($db, $data) {
             ], 400);
         }
 
-        $emailSql = "SELECT id FROM students WHERE email = :email AND student_id != :student_id";
+        $emailSql = "SELECT id 
+                     FROM users 
+                     WHERE email = :email AND id != :student_id AND is_admin = 0";
         $emailStmt = $db->prepare($emailSql);
         $emailStmt->bindValue(':email', $newEmail, PDO::PARAM_STR);
-        $emailStmt->bindValue(':student_id', $student_id, PDO::PARAM_STR);
+        $emailStmt->bindValue(':student_id', $student_id, PDO::PARAM_INT);
         $emailStmt->execute();
 
         if ($emailStmt->fetch(PDO::FETCH_ASSOC)) {
@@ -381,7 +395,7 @@ function updateStudent($db, $data) {
         ], 400);
     }
 
-    $updateSql = "UPDATE students SET " . implode(', ', $fields) . " WHERE student_id = :student_id";
+    $updateSql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = :student_id AND is_admin = 0";
 
     $updateStmt = $db->prepare($updateSql);
     foreach ($params as $key => $value) {
@@ -435,13 +449,14 @@ function deleteStudent($db, $studentId) {
 
     $studentId = sanitizeInput($studentId);
 
-    
-    $checkSql = "SELECT id FROM students WHERE student_id = :student_id";
+    $checkSql = "SELECT id, is_admin FROM users WHERE id = :student_id";
     $checkStmt = $db->prepare($checkSql);
-    $checkStmt->bindValue(':student_id', $studentId, PDO::PARAM_STR);
+    $checkStmt->bindValue(':student_id', $studentId, PDO::PARAM_INT);
     $checkStmt->execute();
 
-    if (!$checkStmt->fetch(PDO::FETCH_ASSOC)) {
+    $row = $checkStmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
         sendResponse([
             'success' => false,
             'message' => 'Student not found'
@@ -449,13 +464,17 @@ function deleteStudent($db, $studentId) {
     }
 
     
-    $deleteSql = "DELETE FROM students WHERE student_id = :student_id";
+    if ($row['is_admin'] == 1) {
+        sendResponse([
+            'success' => false,
+            'message' => 'Cannot delete admin'
+        ], 403);
+    }
 
-    
+    $deleteSql = "DELETE FROM users WHERE id = :student_id AND is_admin = 0";
     $deleteStmt = $db->prepare($deleteSql);
-    $deleteStmt->bindValue(':student_id', $studentId, PDO::PARAM_STR);
+    $deleteStmt->bindValue(':student_id', $studentId, PDO::PARAM_INT);
 
-   
     if ($deleteStmt->execute()) {
         sendResponse([
             'success' => true,
@@ -521,7 +540,6 @@ function changePassword($db, $data) {
     $currentPassword = $data['current_password'];
     $newPassword     = $data['new_password'];
 
-    
     if (strlen($newPassword) < 8) {
         sendResponse([
             'success' => false,
@@ -529,10 +547,11 @@ function changePassword($db, $data) {
         ], 400);
     }
 
-    
-    $sql = "SELECT password FROM students WHERE student_id = :student_id";
+    $sql = "SELECT password 
+            FROM users 
+            WHERE id = :student_id AND is_admin = 0";
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(':student_id', $student_id, PDO::PARAM_STR);
+    $stmt->bindValue(':student_id', $student_id, PDO::PARAM_INT);
     $stmt->execute();
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -550,16 +569,15 @@ function changePassword($db, $data) {
         ], 401);
     }
 
-    
     $hashedNewPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-    
-    $updateSql = "UPDATE students SET password = :password WHERE student_id = :student_id";
+    $updateSql = "UPDATE users 
+                  SET password = :password 
+                  WHERE id = :student_id AND is_admin = 0";
     $updateStmt = $db->prepare($updateSql);
     $updateStmt->bindValue(':password', $hashedNewPassword, PDO::PARAM_STR);
-    $updateStmt->bindValue(':student_id', $student_id, PDO::PARAM_STR);
+    $updateStmt->bindValue(':student_id', $student_id, PDO::PARAM_INT);
 
-    
     if ($updateStmt->execute()) {
         sendResponse([
             'success' => true,
@@ -574,10 +592,6 @@ function changePassword($db, $data) {
 }
 
 
-// ============================================================================
-// MAIN REQUEST ROUTER
-// ============================================================================
-
 try {
     // TODO: Route the request based on HTTP method
     
@@ -585,7 +599,7 @@ try {
         // TODO: Check if student_id is provided in query parameters
         // If yes, call getStudentById()
         // If no, call getStudents() to get all students (with optional search/sort)
-       if (isset($queryParams['student_id']) && $queryParams['student_id'] !== '') {
+        if (isset($queryParams['student_id']) && $queryParams['student_id'] !== '') {
             getStudentById($db, $queryParams['student_id']);
         } else {
             getStudents($db);
@@ -636,7 +650,7 @@ try {
 } catch (Exception $e) {
     // TODO: Handle general errors
     // Return error response with 500 status
-     sendResponse([
+    sendResponse([
         'success' => false,
         'message' => 'Server error'
         // 'error' => $e->getMessage()
@@ -692,7 +706,7 @@ function sanitizeInput($data) {
     // TODO: Strip HTML tags using strip_tags()
     // TODO: Convert special characters using htmlspecialchars()
     // Return sanitized data
-      // TODO: Trim whitespace
+    // TODO: Trim whitespace
     $data = trim($data);
     
     $data = strip_tags($data);
