@@ -231,7 +231,7 @@ function createStudent($db, $data) {
     // If yes, return success response with 201 status (Created)
     // If no, return error response with 500 status
     if (
-        empty($data['student_id']) ||   // still required logically (for autograder)
+        empty($data['student_id']) ||   
         empty($data['name']) ||
         empty($data['email']) ||
         empty($data['password'])
