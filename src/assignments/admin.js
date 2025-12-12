@@ -1,96 +1,140 @@
-/*
-  Requirement: Make the "Manage Assignments" page interactive.
-
-  Instructions:
-  1. Link this file to `admin.html` using:
-     <script src="admin.js" defer></script>
-  
-  2. In `admin.html`, add an `id="assignments-tbody"` to the <tbody> element
-     so you can select it.
-  
-  3. Implement the TODOs below.
-*/
-
 // --- Global Data Store ---
-// This will hold the assignments loaded from the JSON file.
 let assignments = [];
+let editMode = false;
+let editId = null;
 
 // --- Element Selections ---
-// TODO: Select the assignment form ('#assignment-form').
+const assignmentForm = document.querySelector('#assignment-form');
+const assignmentsTableBody = document.querySelector('#assignments-tbody');
+const titleInput = document.querySelector('#assignment-title');
+const descInput = document.querySelector('#assignment-description');
+const dueDateInput = document.querySelector('#assignment-due-date');
+const filesInput = document.querySelector('#assignment-files');
+const submitBtn = document.querySelector('#add-assignment');
 
-// TODO: Select the assignments table body ('#assignments-tbody').
+
 
 // --- Functions ---
-
-/**
- * TODO: Implement the createAssignmentRow function.
- * It takes one assignment object {id, title, dueDate}.
- * It should return a <tr> element with the following <td>s:
- * 1. A <td> for the `title`.
- * 2. A <td> for the `dueDate`.
- * 3. A <td> containing two buttons:
- * - An "Edit" button with class "edit-btn" and `data-id="${id}"`.
- * - A "Delete" button with class "delete-btn" and `data-id="${id}"`.
- */
 function createAssignmentRow(assignment) {
-  // ... your implementation here ...
+    const tr = document.createElement('tr');
+
+    const tdTitle = document.createElement('td');
+    tdTitle.textContent = assignment.title;
+    tr.appendChild(tdTitle);
+
+    const tdDue = document.createElement('td');
+    tdDue.textContent = assignment.due_date;
+    tr.appendChild(tdDue);
+
+    const tdActions = document.createElement('td');
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'edit-btn';
+    editBtn.dataset.id = assignment.id;
+    tdActions.appendChild(editBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.dataset.id = assignment.id;
+    tdActions.appendChild(deleteBtn);
+
+    tr.appendChild(tdActions);
+    return tr;
 }
 
-/**
- * TODO: Implement the renderTable function.
- * It should:
- * 1. Clear the `assignmentsTableBody`.
- * 2. Loop through the global `assignments` array.
- * 3. For each assignment, call `createAssignmentRow()`, and
- * append the resulting <tr> to `assignmentsTableBody`.
- */
 function renderTable() {
-  // ... your implementation here ...
+    assignmentsTableBody.innerHTML = '';
+    assignments.forEach(assignment => {
+        assignmentsTableBody.appendChild(createAssignmentRow(assignment));
+    });
 }
 
-/**
- * TODO: Implement the handleAddAssignment function.
- * This is the event handler for the form's 'submit' event.
- * It should:
- * 1. Prevent the form's default submission.
- * 2. Get the values from the title, description, due date, and files inputs.
- * 3. Create a new assignment object with a unique ID (e.g., `id: \`asg_${Date.now()}\``).
- * 4. Add this new assignment object to the global `assignments` array (in-memory only).
- * 5. Call `renderTable()` to refresh the list.
- * 6. Reset the form.
- */
-function handleAddAssignment(event) {
-  // ... your implementation here ...
+async function handleAddAssignment(event) {
+    event.preventDefault();
+
+    const title = titleInput.value.trim();
+    const description = descInput.value.trim();
+    const due_date = dueDateInput.value;
+    const files = filesInput.value.split('\n').map(f => f.trim()).filter(f => f);
+
+    if (editMode && editId) {
+        // --- EDIT MODE ---
+        const res = await fetch(`api/index.php?resource=assignments`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: editId, title, description, due_date, files })
+        });
+        const result = await res.json();
+        if (!result.success) {
+            alert(result.message || 'Error updating assignment');
+            return;
+        }
+        // Update local array
+        const index = assignments.findIndex(a => a.id == editId);
+        if (index > -1) {
+            assignments[index] = { id: editId, title, description, due_date, files };
+        }
+        editMode = false;
+        editId = null;
+        submitBtn.textContent = 'Add Assignment';
+    } else {
+        // --- ADD NEW ---
+        const res = await fetch('api/index.php?resource=assignments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, description, due_date, files })
+        });
+        const newAssignment = await res.json();
+        if (!newAssignment.success) {
+            alert(newAssignment.message || 'Error adding assignment');
+            return;
+        }
+        assignments.push(newAssignment.data);
+    }
+
+    renderTable();
+    assignmentForm.reset();
 }
 
-/**
- * TODO: Implement the handleTableClick function.
- * This is an event listener on the `assignmentsTableBody` (for delegation).
- * It should:
- * 1. Check if the clicked element (`event.target`) has the class "delete-btn".
- * 2. If it does, get the `data-id` attribute from the button.
- * 3. Update the global `assignments` array by filtering out the assignment
- * with the matching ID (in-memory only).
- * 4. Call `renderTable()` to refresh the list.
- */
-function handleTableClick(event) {
-  // ... your implementation here ...
+async function handleTableClick(event) {
+    const id = event.target.dataset.id;
+
+    if (event.target.classList.contains('delete-btn')) {
+        const res = await fetch(`api/index.php?resource=assignments&id=${id}`, { method: 'DELETE' });
+        const result = await res.json();
+        if (result.success) {
+            assignments = assignments.filter(a => a.id != id);
+            renderTable();
+        } else {
+            alert(result.message || 'Error deleting assignment');
+        }
+    } else if (event.target.classList.contains('edit-btn')) {
+        // --- FILL FORM FOR EDIT ---
+        const assignment = assignments.find(a => a.id == id);
+        if (!assignment) return;
+
+        titleInput.value = assignment.title;
+        descInput.value = assignment.description;
+        dueDateInput.value = assignment.due_date;
+        filesInput.value = assignment.files.join('\n');
+
+        editMode = true;
+        editId = id;
+        submitBtn.textContent = 'Update Assignment';
+        titleInput.focus();
+    }
 }
 
-/**
- * TODO: Implement the loadAndInitialize function.
- * This function needs to be 'async'.
- * It should:
- * 1. Use `fetch()` to get data from 'assignments.json'.
- * 2. Parse the JSON response and store the result in the global `assignments` array.
- * 3. Call `renderTable()` to populate the table for the first time.
- * 4. Add the 'submit' event listener to `assignmentForm` (calls `handleAddAssignment`).
- * 5. Add the 'click' event listener to `assignmentsTableBody` (calls `handleTableClick`).
- */
 async function loadAndInitialize() {
-  // ... your implementation here ...
+    const res = await fetch('api/index.php?resource=assignments');
+    const data = await res.json();
+    if (data.success) assignments = data.data;
+    renderTable();
+
+    assignmentForm.addEventListener('submit', handleAddAssignment);
+    assignmentsTableBody.addEventListener('click', handleTableClick);
 }
 
-// --- Initial Page Load ---
-// Call the main async function to start the application.
 loadAndInitialize();

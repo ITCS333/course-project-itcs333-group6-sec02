@@ -1,5 +1,3 @@
-
-
 // --- Global Data ---
 let currentResourceId = null;
 let currentComments = [];
@@ -26,12 +24,18 @@ function renderResourceDetails(resource) {
 
 function createCommentArticle(comment) {
   const article = document.createElement('article');
+
   const p = document.createElement('p');
   p.textContent = comment.text || '';
-  const footer = document.createElement('footer');
-  footer.textContent = comment.author || 'Anonymous';
   article.appendChild(p);
+
+  const footer = document.createElement('footer');
+  // Show author and timestamp if available
+  footer.textContent = comment.author 
+    ? `${comment.author} - ${new Date(comment.created_at).toLocaleString()}`
+    : 'Anonymous';
   article.appendChild(footer);
+
   return article;
 }
 
@@ -50,8 +54,7 @@ async function handleAddComment(event) {
 
   const payload = {
     resource_id: currentResourceId,
-    author: 'Student',
-    text
+    text // Do NOT send author; server will assign it
   };
 
   try {
@@ -62,15 +65,27 @@ async function handleAddComment(event) {
     });
     const data = await response.json();
     if (data.success) {
-      currentComments.push(payload);
-      renderComments();
+      // Re-fetch comments from server to get accurate author and timestamp
+      await loadComments();
       newComment.value = '';
     } else {
-      alert('Failed to add comment');
+      alert(data.message || 'Failed to add comment');
     }
   } catch (err) {
     console.error(err);
     alert('Error adding comment');
+  }
+}
+
+async function loadComments() {
+  try {
+    const commentsRes = await fetch(`api/index.php?action=comments&resource_id=${currentResourceId}`);
+    const commentsData = await commentsRes.json();
+    currentComments = commentsData.success ? commentsData.data : [];
+    renderComments();
+  } catch (err) {
+    console.error(err);
+    commentList.innerHTML = '<p>Failed to load comments.</p>';
   }
 }
 
@@ -84,22 +99,15 @@ async function initializePage() {
 
   try {
     // Fetch resource details
-    const [resourceRes, commentsRes] = await Promise.all([
-      fetch(`api/index.php?id=${currentResourceId}`),
-      fetch(`api/index.php?action=comments&resource_id=${currentResourceId}`)
-    ]);
-
+    const resourceRes = await fetch(`api/index.php?id=${currentResourceId}`);
     const resourceData = await resourceRes.json();
-    const commentsData = await commentsRes.json();
-
     if (resourceData.success) renderResourceDetails(resourceData.data);
     else resourceTitle.textContent = 'Resource not found';
 
-    currentComments = commentsData.success ? commentsData.data : [];
-    renderComments();
+    // Load comments
+    await loadComments();
 
     if (commentForm) commentForm.addEventListener('submit', handleAddComment);
-
   } catch (err) {
     console.error(err);
     resourceTitle.textContent = 'Failed to load resource';
