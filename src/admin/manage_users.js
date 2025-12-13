@@ -43,25 +43,32 @@ const editId = document.getElementById("edit-id");
 const editCancelBtn = document.getElementById("edit-cancel");
 
 // Edit Modal Close Button.
-editCancelBtn.addEventListener("click", () => {
+if (editCancelBtn && editModal) {
+  editCancelBtn.addEventListener("click", () => {
     editModal.style.display = "none";
-});
+  });
+}
 
 // Modal Submit / Update Student.
-editForm.addEventListener("submit", function (event) {
+if (editForm) {
+  editForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
     const id = editId.value;
     const student = students.find((s) => s.id === id);
 
     if (student) {
-        student.name = editName.value.trim();
-        student.email = editEmail.value.trim();
+      student.name = editName.value.trim();
+      student.email = editEmail.value.trim();
     }
 
-    editModal.style.display = "none";
+    if (editModal) {
+      editModal.style.display = "none";
+    }
+
     renderTable(students);
-});
+  });
+}
 // --- Functions ---
 /**
  * TODO: Implement the createStudentRow function.
@@ -100,6 +107,7 @@ function createStudentRow(student) {
  * 3. For each student, call `createStudentRow` and append the returned <tr> to `studentTableBody`.
  */
 function renderTable(studentArray) {
+  if (!studentTableBody) return;
   studentTableBody.innerHTML = "";
   studentArray.forEach((student) => {
     const row = createStudentRow(student);
@@ -174,18 +182,17 @@ function handleAddStudent(event) {
     return;
   }
 
-  const existing = students.find((s) => s.id === id);
-  if (existing) {
+  if (students.find((s) => s.id === id)) {
     alert("A student with this ID already exists.");
     return;
   }
 
-  const newStudent = { name, id, email };
-  students.push(newStudent);
+  students.push({ name, id, email });
   renderTable(students);
 
- 
-  addStudentForm.reset();
+  if (addStudentForm) {
+    addStudentForm.reset();
+  }
 }
 
 /**
@@ -202,25 +209,22 @@ function handleAddStudent(event) {
 function handleTableClick(event) {
   const target = event.target;
 
-  // Handle Delete Button
+  
   if (target.classList.contains("delete-btn")) {
     const id = target.dataset.id;
     students = students.filter((s) => s.id !== id);
     renderTable(students);
   }
 
-  // Handle Edit Button (Modal Version)
+  
   if (target.classList.contains("edit-btn")) {
     const id = target.dataset.id;
     const student = students.find((s) => s.id === id);
 
-    if (student) {
-      // Fill the modal with the current student values
+    if (student && editModal) {
       editName.value = student.name;
       editEmail.value = student.email;
       editId.value = student.id;
-
-      // Show the modal
       editModal.style.display = "flex";
     }
   }
@@ -318,12 +322,23 @@ async function loadStudentsAndInitialize() {
     console.error("Error loading students:", error);
   }
 
-  changePasswordForm.addEventListener("submit", handleChangePassword);
-  addStudentForm.addEventListener("submit", handleAddStudent);
-  studentTableBody.addEventListener("click", handleTableClick);
-  searchInput.addEventListener("input", handleSearch);
-  tableHeaders.forEach((th) => th.addEventListener("click", handleSort));
+  if (changePasswordForm) {
+    changePasswordForm.addEventListener("submit", handleChangePassword);
+  }
+  if (addStudentForm) {
+    addStudentForm.addEventListener("submit", handleAddStudent);
+  }
+  if (studentTableBody) {
+    studentTableBody.addEventListener("click", handleTableClick);
+  }
+  if (searchInput) {
+    searchInput.addEventListener("input", handleSearch);
+  }
+  tableHeaders.forEach((th) => {
+    th.addEventListener("click", handleSort);
+  });
 }
+
 
 // --- Initial Page Load ---
 // Call the main async function to start the application.
