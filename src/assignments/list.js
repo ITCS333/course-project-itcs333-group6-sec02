@@ -1,6 +1,7 @@
+// Make sure the functions are global for the test environment
 const listSection = document.querySelector('#assignment-list-section');
 
-function createAssignmentArticle(assignment) {
+window.createAssignmentArticle = function(assignment) {
     const article = document.createElement('article');
 
     const h2 = document.createElement('h2');
@@ -21,15 +22,16 @@ function createAssignmentArticle(assignment) {
     article.appendChild(link);
 
     return article;
-}
+};
 
-async function loadAssignments() {
+window.loadAssignments = async function() {
     const res = await fetch('api/index.php?resource=assignments');
     const data = await res.json();
     if (!data.success) return;
 
     listSection.innerHTML = '';
     data.data.forEach(assignment => listSection.appendChild(createAssignmentArticle(assignment)));
-}
+};
 
+// Call it normally in browser
 loadAssignments();
