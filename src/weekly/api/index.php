@@ -1,4 +1,10 @@
 <?php
+
+session_start();
+
+if (!isset($_SESSION['weekly_user'])) {
+    $_SESSION['weekly_user'] = 'Student';
+}
 /**
  * Weekly Course Breakdown API
  * 
