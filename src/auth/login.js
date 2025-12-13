@@ -113,7 +113,10 @@ function handleLogin(event) {
     displayMessage("Password must be at least 8 characters.", "error");
     return;
   }
-
+ 
+  if (typeof fetch === "undefined") {
+    return;
+  }
   
   fetch("/auth/api/index.php", {
     method: "POST",
