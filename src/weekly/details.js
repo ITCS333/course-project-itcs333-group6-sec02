@@ -30,7 +30,7 @@ const weekDescription = document.querySelector('#week-description');
 const weekLinksList = document.querySelector('#week-links-list');
 const commentList = document.querySelector('#comment-list');
 const commentForm = document.querySelector('#comment-form');
-const newCommentText = document.querySelector('#new-comment-text');
+const newCommentText = document.querySelector('#new-comment');
 
 
 // --- Functions ---
@@ -168,7 +168,7 @@ async function initializePage() {
   try {
     const [weeksResponse, commentsResponse] = await Promise.all([
       fetch('api/weeks.json'),
-      fetch('api/week-comments.json')
+      fetch('api/comments.json')
     ]);
     if (!weeksResponse.ok || !commentsResponse.ok) {
       throw new Error('Failed to fetch data');

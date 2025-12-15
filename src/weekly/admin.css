@@ -133,7 +133,7 @@ main h2 {
   border-radius: 6px;
   padding: 10px;
 }
-#comments-container article {
+#comment-list article {
   background: rgb(252, 247, 255);
   border: 1px solid rgb(234, 214, 246);
   border-radius: 6px;
@@ -141,7 +141,7 @@ main h2 {
   padding: 10px;
 }
 
-#new-comment,#discription-section,#Exercise-section,#weekly-list article{
+#new-comment,#discription-section,#week-links-list,#week-list-section article{
   background: rgb(252, 247, 255);
   width: 100%;
   margin-top: 5px;

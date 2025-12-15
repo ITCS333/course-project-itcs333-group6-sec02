@@ -1,56 +1,58 @@
-<!--
-  Requirement: Create the Dedicated Page for a Single Week
-
-  Instructions:
-  This page displays the full details for one week and allows for discussion.
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1">
-     <title>Discussion</title>
-     <link rel="stylesheet" href="admin.css">
-     <script src="details.js" defer></script>
-     
-     
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Week Details</title>
+    <link rel="stylesheet" href="admin.css">
+    <script src="details.js" defer></script>
 </head>
 <body>
-        <header>
-            <h1 id="week-title">Week 1: Introduction to HTML</h1>
-        </header>
-    <main>
-         <section >
-            <article>
-                <p class="date" id="week-start-date">Starts on: 2024-01-15</p>
-                <h2 >Description & Notes</h2>
-                <div id="discription-section"><p id="week-description">This week introduces the fundamentals of HTML, including its structure, common tags, and best practices for creating web pages. Students will learn how to create headings, paragraphs, links, images, and lists. By the end of the week, students should be able to build a simple static webpage using HTML.</p></div>
-                <h2>Exercises & Resources</h2>
-                <ul id="Exercise-section" id="week-links-list">
-                    <li><a href="#">Exercise 1 - Basic Tags</a></li>
-                </ul>
-            </article>
-         </section>
-        <section id="discussion-forum">
-            <h2>Discussion</h2>
-            <div id="comments-container">
-                <article>
-                    <p>I have a question about the 'header' tag. When should it be used in a webpage?</p>
-                    <footer>Posted by: John Doe</footer>
-                </article>
-            </div id="comment-list">
-            <form id="comment-form" id="comment-form" action="#">
-                <fieldset>
-                    <legend style="color:rgb(145, 4, 173); text-align: center;">Ask a Question</legend>
-                        <label for="new-comment">Your Comment:</label>
-                        <textarea id="new-comment-text" id="new-comment" rows="4" required></textarea>
-                        <button type="submit">Post Comment</button> 
-                </fieldset>
-            </form>
-         </section>
-    </main>
 
-    
+<header>
+    <h1 id="week-title">Week 1: Introduction to HTML</h1>
+</header>
+
+<main>
+
+    <article>
+        <p class="date" id="week-start-date">Starts on: 2024-01-15</p>
+
+        <h2>Description & Notes</h2>
+        <p id="week-description">
+            This week introduces the fundamentals of HTML, including its structure,
+            common tags, and best practices for creating web pages.
+        </p>
+
+        <h2>Exercises & Resources</h2>
+        <ul id="week-links-list">
+            <li><a href="#">Exercise 1 - Basic Tags</a></li>
+        </ul>
+    </article>
+
+    <section id="discussion-forum">
+        <h2>Discussion</h2>
+
+        <div id="comment-list">
+            <article>
+                <p>I have a question about the 'header' tag.</p>
+                <footer>Posted by: John Doe</footer>
+            </article>
+        </div>
+
+        <form id="comment-form" action="#">
+            <fieldset>
+                <legend>Ask a Question</legend>
+
+                <label for="new-comment">Your Comment:</label>
+                <textarea id="new-comment" rows="4" required></textarea>
+
+                <button type="submit">Post Comment</button>
+            </fieldset>
+        </form>
+    </section>
+
+</main>
+
 </body>
 </html>
-
