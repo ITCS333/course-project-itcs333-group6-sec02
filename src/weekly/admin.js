@@ -20,7 +20,10 @@ let weeks = [];
 const weekForm = document.querySelector('#week-form');
 
 // TODO: Select the weeks table body ('#weeks-tbody').
-const weeksTableBody = document.querySelector('#weeks-tbody');  
+const weeksTableBody = document.querySelector('#weeks-tbody');
+
+// (Required modification) API endpoint instead of local JSON files
+const API_URL = 'api/index.php';
 
 // --- Functions ---
 
@@ -39,8 +42,8 @@ function createWeekRow(week) {
   const tr = document.createElement('tr');
   const titleTd = document.createElement('td');
   titleTd.textContent = week.title;
-  tr.appendChild(titleTd);  
-  
+  tr.appendChild(titleTd);
+
   const descTd = document.createElement('td');
   descTd.textContent = week.description;
   tr.appendChild(descTd);
@@ -62,7 +65,6 @@ function createWeekRow(week) {
   tr.appendChild(actionsTd);
 
   return tr;
-
 }
 
 /**
@@ -75,11 +77,11 @@ function createWeekRow(week) {
  */
 function renderTable() {
   // ... your implementation here ...
-   weeksTableBody.innerHTML = '';
-   weeks.forEach(week => {
-      const row = createWeekRow(week);
-      weeksTableBody.appendChild(row);
-    });
+  weeksTableBody.innerHTML = '';
+  weeks.forEach(week => {
+    const row = createWeekRow(week);
+    weeksTableBody.appendChild(row);
+  });
 }
 
 /**
@@ -95,7 +97,7 @@ function renderTable() {
  * 6. Call `renderTable()` to refresh the list.
  * 7. Reset the form.
  */
-function handleAddWeek(event) {
+async function handleAddWeek(event) {
   // ... your implementation here ...
   event.preventDefault();
 
@@ -105,7 +107,7 @@ function handleAddWeek(event) {
   const linksInput = document.querySelector('#week-links');
 
   const title = titleInput.value.trim();
-  const startDate = dateInput.value; 
+  const startDate = dateInput.value;
   const description = descInput.value.trim();
   const linksRaw = linksInput.value.trim();
 
@@ -119,18 +121,31 @@ function handleAddWeek(event) {
     return;
   }
 
-  const newWeek = {
-    id: `week_${Date.now()}`, 
-    title: title,
-    startDate: startDate,
-    description: description,
-    links: links
-  };
+  try {
+    const response = await fetch(`${API_URL}?resource=weeks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: title,
+        start_date: startDate,
+        description: description,
+        links: links
+      })
+    });
 
-  weeks.push(newWeek);
-  renderTable();
-  weekForm.reset();
+    const result = await response.json();
 
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || `HTTP error ${response.status}`);
+    }
+
+    weeks.push(result.data);
+    renderTable();
+    weekForm.reset();
+  } catch (error) {
+    console.error('Error adding week:', error);
+    alert('Failed to add week. Check console for details.');
+  }
 }
 
 /**
@@ -143,14 +158,33 @@ function handleAddWeek(event) {
  * with the matching ID (in-memory only).
  * 4. Call `renderTable()` to refresh the list.
  */
-function handleTableClick(event) {
+async function handleTableClick(event) {
   // ... your implementation here ...
   const target = event.target;
-   if (target.classList.contains('delete-btn')) {
-    const idToDelete = target.dataset.id; 
-    weeks = weeks.filter(week => week.id !== idToDelete);
-    renderTable();
-  }}
+
+  if (target.classList.contains('delete-btn')) {
+    const idToDelete = target.dataset.id;
+
+    try {
+      const response = await fetch(
+        `${API_URL}?resource=weeks&week_id=${encodeURIComponent(idToDelete)}`,
+        { method: 'DELETE' }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || `HTTP error ${response.status}`);
+      }
+
+      weeks = weeks.filter(week => String(week.id) !== String(idToDelete));
+      renderTable();
+    } catch (error) {
+      console.error('Error deleting week:', error);
+      alert('Failed to delete week. Check console for details.');
+    }
+  }
+}
 
 /**
  * TODO: Implement the loadAndInitialize function.
@@ -165,18 +199,21 @@ function handleTableClick(event) {
 async function loadAndInitialize() {
   // ... your implementation here ...
   try {
-    const response = await fetch('api/weeks.json'); 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    const response = await fetch(`${API_URL}?resource=weeks`);
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || `HTTP error ${response.status}`);
     }
-    weeks = await response.json(); 
+
+    weeks = result.data;
     renderTable();
+
     weekForm.addEventListener('submit', handleAddWeek);
     weeksTableBody.addEventListener('click', handleTableClick);
   } catch (error) {
     console.error('Error loading weeks data:', error);
   }
-
 }
 
 // --- Initial Page Load ---

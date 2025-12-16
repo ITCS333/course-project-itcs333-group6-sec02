@@ -15,6 +15,9 @@
 // TODO: Select the section for the week list ('#week-list-section').
 const listSection = document.querySelector('#week-list-section');
 
+// (Required modification) API endpoint instead of local JSON files
+const API_URL = 'api/index.php';
+
 // --- Functions ---
 
 /**
@@ -42,7 +45,6 @@ function createWeekArticle(week) {
   aLink.textContent = 'View Details & Discussion';
   article.appendChild(aLink);
   return article;
-
 }
 
 /**
@@ -59,11 +61,15 @@ function createWeekArticle(week) {
 async function loadWeeks() {
   // ... your implementation here ...
   try {
-    const response = await fetch('api/weeks.json'); 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    const response = await fetch(`${API_URL}?resource=weeks`);
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || `HTTP error! status: ${response.status}`);
     }
-    const weeks = await response.json(); 
+
+    const weeks = result.data;
+
     listSection.innerHTML = '';
     weeks.forEach(week => {
       const article = createWeekArticle(week);
@@ -71,8 +77,7 @@ async function loadWeeks() {
     });
   } catch (error) {
     console.error('Error loading weeks data:', error);
-  } 
-  
+  }
 }
 
 // --- Initial Page Load ---
