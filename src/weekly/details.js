@@ -32,6 +32,8 @@ const commentList = document.querySelector('#comment-list');
 const commentForm = document.querySelector('#comment-form');
 const newCommentText = document.querySelector('#new-comment');
 
+// (Required modification) API endpoint instead of local JSON files
+const API_URL = 'api/index.php';
 
 // --- Functions ---
 
@@ -44,7 +46,7 @@ const newCommentText = document.querySelector('#new-comment');
  */
 function getWeekIdFromURL() {
   const params = new URLSearchParams(window.location.search);
-  return params.get('id');  
+  return params.get('id');
   // ... your implementation here ...
 }
 
@@ -61,8 +63,8 @@ function getWeekIdFromURL() {
  */
 function renderWeekDetails(week) {
   weekTitle.textContent = week.title;
-  weekStartDate.textContent = "Starts on: " + week.startDate;
-  weekDescription.textContent = week.description;   
+  weekStartDate.textContent = "Starts on: " + week.start_date;
+  weekDescription.textContent = week.description;
   weekLinksList.innerHTML = '';
   week.links.forEach(link => {
     const li = document.createElement('li');
@@ -71,7 +73,7 @@ function renderWeekDetails(week) {
     a.textContent = link;
     li.appendChild(a);
     weekLinksList.appendChild(li);
-  }); 
+  });
 
   // ... your implementation here ...
 }
@@ -87,12 +89,11 @@ function createCommentArticle(comment) {
   const article = document.createElement('article');
   const p = document.createElement('p');
   p.textContent = comment.text;
-  article.appendChild(p); 
+  article.appendChild(p);
   const footer = document.createElement('footer');
   footer.textContent = `Posted by: ${comment.author}`;
   article.appendChild(footer);
   return article;
-
 }
 
 /**
@@ -109,8 +110,7 @@ function renderComments() {
   currentComments.forEach(comment => {
     const article = createCommentArticle(comment);
     commentList.appendChild(article);
-  }); 
-
+  });
 }
 
 /**
@@ -126,19 +126,38 @@ function renderComments() {
  * 6. Call `renderComments()` to refresh the list.
  * 7. Clear the `newCommentText` textarea.
  */
-function handleAddComment(event) {
+async function handleAddComment(event) {
   // ... your implementation here ...
   event.preventDefault();
-  const commentText = newCommentText.value.trim();  
+  const commentText = newCommentText.value.trim();
   if (commentText === '') {
     return;
   }
-  const newComment = {    author: 'Student', text: commentText  };
-  currentComments.push(newComment);  
-  renderComments();  
-  newCommentText.value = '';  
-  
 
+  try {
+    const response = await fetch(`${API_URL}?resource=comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        week_id: currentWeekId,
+        author: 'Student',
+        text: commentText
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || `HTTP error ${response.status}`);
+    }
+
+    currentComments.push(result.data);
+    renderComments();
+    newCommentText.value = '';
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    alert('Failed to add comment. Check console for details.');
+  }
 }
 
 /**
@@ -164,33 +183,36 @@ async function initializePage() {
   if (!currentWeekId) {
     weekTitle.textContent = "Week not found.";
     return;
-  } 
+  }
+
   try {
-    const [weeksResponse, commentsResponse] = await Promise.all([
-      fetch('api/weeks.json'),
-      fetch('api/comments.json')
+    const [weekResponse, commentsResponse] = await Promise.all([
+      fetch(`${API_URL}?resource=weeks&week_id=${encodeURIComponent(currentWeekId)}`),
+      fetch(`${API_URL}?resource=comments&week_id=${encodeURIComponent(currentWeekId)}`)
     ]);
-    if (!weeksResponse.ok || !commentsResponse.ok) {
-      throw new Error('Failed to fetch data');
-    } 
-    const weeks = await weeksResponse.json();
-    const commentsData = await commentsResponse.json(); 
-    const currentWeek = weeks.find(week => week.id === currentWeekId); 
-    currentComments = commentsData[currentWeekId] || [];
+
+    const weekResult = await weekResponse.json();
+    const commentsResult = await commentsResponse.json();
+
+    if (!weekResponse.ok || !weekResult.success) {
+      weekTitle.textContent = "Week not found.";
+      return;
+    }
+
+    const currentWeek = weekResult.data;
+    currentComments = (commentsResponse.ok && commentsResult.success) ? commentsResult.data : [];
+
     if (currentWeek) {
       renderWeekDetails(currentWeek);
       renderComments();
       commentForm.addEventListener('submit', handleAddComment);
-    }
-    else {
+    } else {
       weekTitle.textContent = "Week not found.";
     }
   } catch (error) {
     console.error('Error initializing page:', error);
     weekTitle.textContent = "Error loading week details.";
   }
-
-
 }
 
 // --- Initial Page Load ---

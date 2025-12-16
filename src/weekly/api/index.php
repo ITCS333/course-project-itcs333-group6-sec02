@@ -65,7 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // TODO: Include the database connection class
 // Assume the Database class has a method getConnection() that returns a PDO instance
 // Example: require_once '../config/Database.php';
-require_once '/db.php';
+require_once __DIR__ . '/db.php';
+
 
 // TODO: Get the PDO database connection
 // Example: $database = new Database();
@@ -76,6 +77,8 @@ $db = $database->getConnection();
 // TODO: Get the HTTP request method
 // Use $_SERVER['REQUEST_METHOD']
 $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+function isLoggedIn() { return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true; }
+function isAdmin() { return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1; }
 
 // TODO: Get the request body for POST and PUT requests
 // Use file_get_contents('php://input') to get raw POST data
@@ -118,7 +121,7 @@ function getAllWeeks($db) {
     // TODO: Start building the SQL query
     // Base query: SELECT week_id, title, start_date, description, links, created_at FROM weeks
     // Database has id instead of week_id, so we alias id as week_id
-    $sql = "SELECT id AS week_id, title, start_date, description, links, created_at FROM weeks";
+    $sql = "SELECT id, title, start_date AS startDate, description, links, created_at FROM weeks";
 
     $params = [];
 
@@ -202,8 +205,9 @@ function getWeekById($db, $weekId) {
     // TODO: Prepare SQL query to select week by week_id
     // SELECT week_id, title, start_date, description, links, created_at FROM weeks WHERE week_id = ?
     // Database uses id instead of week_id, so we select by id and alias it
-    $sql = "SELECT id AS week_id, title, start_date, description, links, created_at 
-            FROM weeks WHERE id = ?";
+   $sql = "SELECT id, title, start_date AS startDate, description, links, created_at
+        FROM weeks WHERE id = ?";
+
 
     $stmt = $db->prepare($sql);
 
@@ -250,6 +254,9 @@ function getWeekById($db, $weekId) {
  *   - links: Array of resource links (will be JSON encoded)
  */
 function createWeek($db, $data) {
+    if (!isLoggedIn() || !isAdmin()) {
+        sendError("Unauthorized", 401);
+    }
     // TODO: Validate required fields
     // Check if week_id, title, start_date, and description are provided
     // If any field is missing, return error response with 400 status
@@ -310,11 +317,11 @@ function createWeek($db, $data) {
     if ($success) {
         $newId = $db->lastInsertId();
         $createdWeek = [
-            'week_id'    => (int)$newId,   // expose id as week_id
-            'title'      => $title,
-            'start_date' => $startDate,
-            'description'=> $description,
-            'links'      => $links
+            'id'          => (int)$newId,
+            'title'       => $title,
+            'startDate'   => $startDate,
+            'description' => $description,
+            'links'       => $links
         ];
         sendResponse([
             'success' => true,
@@ -341,6 +348,9 @@ function createWeek($db, $data) {
 function updateWeek($db, $data) {
     // TODO: Validate that week_id is provided
     // If not, return error response with 400 status
+     if (!isLoggedIn() || !isAdmin()) {
+        sendError("Unauthorized", 401);
+    }
     $weekId = isset($data['week_id']) ? $data['week_id'] : null;
     if ($weekId === null || $weekId === '') {
         sendError('week_id is required', 400);
@@ -445,6 +455,9 @@ function updateWeek($db, $data) {
 function deleteWeek($db, $weekId) {
     // TODO: Validate that week_id is provided
     // If not, return error response with 400 status
+     if (!isLoggedIn() || !isAdmin()) {
+        sendError("Unauthorized", 401);
+    }
     if ($weekId === null || $weekId === '') {
         sendError('week_id is required', 400);
         return;
@@ -467,7 +480,7 @@ function deleteWeek($db, $weekId) {
     // TODO: Delete associated comments first (to maintain referential integrity)
     // Prepare DELETE query for comments table
     // DELETE FROM comments WHERE week_id = ?
-    $deleteCommentsSql = "DELETE FROM comments WHERE week_id = ?";
+    $deleteCommentsSql = "DELETE FROM comments_week WHERE week_id = ?";
     $deleteCommentsStmt = $db->prepare($deleteCommentsSql);
     $deleteCommentsStmt->bindValue(1, $weekId, PDO::PARAM_INT);
 
@@ -521,8 +534,11 @@ function getCommentsByWeek($db, $weekId) {
 
     // TODO: Prepare SQL query to select comments for the week
     // SELECT id, week_id, author, text, created_at FROM comments WHERE week_id = ? ORDER BY created_at ASC
-    $sql = "SELECT id, week_id, author, text, created_at 
-            FROM comments WHERE week_id = ? ORDER BY created_at ASC";
+    $sql = "SELECT id, week_id, author, text, created_at
+        FROM comments_week
+        WHERE week_id = ?
+        ORDER BY created_at ASC";
+
 
     $stmt = $db->prepare($sql);
 
@@ -558,8 +574,12 @@ function createComment($db, $data) {
     // TODO: Validate required fields
     // Check if week_id, author, and text are provided
     // If any field is missing, return error response with 400 status
+    if (!isLoggedIn()) {
+        sendError("Login required", 401);
+    }
     $weekId = isset($data['week_id']) ? $data['week_id'] : null;
-    $author = isset($data['author']) ? sanitizeInput($data['author']) : null;
+    $author = $_SESSION['user_name'] ?? 'Student';
+    $author = sanitizeInput($author);
     $text   = isset($data['text']) ? sanitizeInput($data['text']) : null;
 
     if ($weekId === null || $author === null || $text === null) {
@@ -594,7 +614,8 @@ function createComment($db, $data) {
 
     // TODO: Prepare INSERT query
     // INSERT INTO comments (week_id, author, text) VALUES (?, ?, ?)
-    $sql = "INSERT INTO comments (week_id, author, text) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO comments_week (week_id, author, text) VALUES (?, ?, ?)";
+
 
     $stmt = $db->prepare($sql);
 
@@ -647,7 +668,7 @@ function deleteComment($db, $commentId) {
     // TODO: Check if comment exists
     // Prepare and execute a SELECT query
     // If not found, return error response with 404 status
-    $checkSql = "SELECT id FROM comments WHERE id = ?";
+    $checkSql = "SELECT id FROM comments_week WHERE id = ?";
     $checkStmt = $db->prepare($checkSql);
     $checkStmt->bindValue(1, $commentId, PDO::PARAM_INT);
     $checkStmt->execute();
@@ -659,8 +680,8 @@ function deleteComment($db, $commentId) {
     }
 
     // TODO: Prepare DELETE query
-    // DELETE FROM comments WHERE id = ?
-    $sql = "DELETE FROM comments WHERE id = ?";
+    // DELETE FROM comments_week WHERE id = ?
+    $sql = "DELETE FROM comments_week WHERE id = ?";
     $stmt = $db->prepare($sql);
 
     // TODO: Bind the id parameter
